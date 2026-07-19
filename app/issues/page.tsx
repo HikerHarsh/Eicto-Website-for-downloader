@@ -24,6 +24,7 @@ interface Issue {
 export default function IssuesPage() {
     const [issues, setIssues] = useState<Issue[]>([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
     
     // Form state
     const [showForm, setShowForm] = useState(false);
@@ -149,13 +150,31 @@ export default function IssuesPage() {
         }
     };
 
+    const filteredIssues = issues.filter(issue => 
+        issue.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        issue.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <main className="issues-page">
             <div className="container issues-container">
                 <div className="issues-header fade-in-up">
                     <h1 className="hero-title">Community <span className="text-gradient">Feedback</span></h1>
                     <p className="hero-subtitle">Help us shape the future of Eicto. Report bugs, suggest new features, and vote on what we should build next.</p>
-                    
+                </div>
+                
+                <div className="issues-actions-header fade-in-up">
+                    <div className="search-container">
+                        <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input 
+                            type="text" 
+                            className="search-input" 
+                            placeholder="Search issues, bugs, and features..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+
                     {!showForm && (
                         <button 
                             className="btn btn-primary"
@@ -212,10 +231,10 @@ export default function IssuesPage() {
                         <div className="empty-state">
                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{marginBottom: '15px', opacity: 0.5}}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                             <br/>
-                            No issues posted yet. Be the first to suggest a feature!
+                            {searchQuery ? "No issues found matching your search." : "No issues posted yet. Be the first to suggest a feature!"}
                         </div>
                     ) : (
-                        issues.map(issue => (
+                        filteredIssues.map(issue => (
                             <div key={issue._id} className="issue-card fade-in-up visible">
                                 <div className="vote-column">
                                     <button className="vote-btn" onClick={() => handleUpvote(issue._id)}>
