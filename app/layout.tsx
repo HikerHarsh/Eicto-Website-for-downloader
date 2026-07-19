@@ -108,7 +108,7 @@ export default function RootLayout({
               </div>
               <div className="footer-links">
                 <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
+                <Link href="/terms">Terms of Service</Link>
                 <a href="#">Contact</a>
               </div>
             </div>
