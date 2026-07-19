@@ -25,6 +25,10 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
+  icons: {
+    icon: "/assets/logo.png",
+    apple: "/assets/logo.png",
+  },
   openGraph: {
     title: "Eicto Download Manager - The Ultimate Video Downloader",
     description: "Detect and download videos from any website with lightning-fast speeds. The only video download manager you will ever need. Free, fast, and secure.",
