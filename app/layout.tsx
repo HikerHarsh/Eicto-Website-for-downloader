@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "The ultimate video download manager. Detect and download videos from various websites with a single click.",
 };
 
+import AquariumBackground from "./components/AquariumBackground";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -21,6 +23,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
       </head>
       <body>
+        <AquariumBackground />
         <div className="liquid-bg">
             <div className="blob blob-1"></div>
             <div className="blob blob-2"></div>

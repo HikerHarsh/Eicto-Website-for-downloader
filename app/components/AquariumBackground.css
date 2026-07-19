@@ -1,0 +1,108 @@
+.aquarium-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* Crucial: lets clicks pass through */
+    z-index: 0; /* Keep it behind everything */
+    overflow: hidden;
+}
+
+/* Ambient Bubbles */
+.ambient-bubble {
+    position: absolute;
+    bottom: -20px;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation-name: floatUp;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+/* Hover Cursor Bubbles */
+.cursor-bubble {
+    position: absolute;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.1));
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: cursorFloatUp 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.8;
+    }
+    90% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-105vh) translateX(20px) scale(1.5);
+        opacity: 0;
+    }
+}
+
+@keyframes cursorFloatUp {
+    0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, calc(-50% - 150px)) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Fish Animations */
+.fish-wrapper {
+    position: absolute;
+    width: 100px;
+    height: 50px;
+}
+
+.fish-svg {
+    width: 100%;
+    height: 100%;
+    animation: fishSwim 2s ease-in-out infinite alternate;
+}
+
+/* Fish swimming left */
+.animate-left {
+    right: -150px;
+    animation-name: swimLeft;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+/* Fish swimming right */
+.animate-right {
+    left: -150px;
+    animation-name: swimRight;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+.animate-right .fish-svg {
+    transform: scaleX(-1);
+}
+
+@keyframes swimLeft {
+    0% { right: -150px; }
+    100% { right: 110vw; }
+}
+
+@keyframes swimRight {
+    0% { left: -150px; }
+    100% { left: 110vw; }
+}
+
+@keyframes fishSwim {
+    0% { transform: translateY(-5px); }
+    100% { transform: translateY(5px); }
+}
