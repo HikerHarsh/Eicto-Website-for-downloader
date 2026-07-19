@@ -32,7 +32,7 @@ export default function RootLayout({
                 <li><Link href="/#features" className="nav-link">Features</Link></li>
                 <li><Link href="/install" className="nav-link">Install Guide</Link></li>
                 <li><Link href="/#support" className="nav-link">Support</Link></li>
-                <li><a href="https://github.com/HikerHarsh/Eicto-Download-Manager/releases/download/v1.0.0-beta/EictoSetup_v1.0.0.exe" className="btn btn-nav" target="_blank" rel="noopener noreferrer">Download Now</a></li>
+                <li><a href="https://github.com/HikerHarsh/Eicto-release/releases/download/v1.0.0-beta/EictoSetup_v1.0.0.exe" className="btn btn-nav" target="_blank" rel="noopener noreferrer">Download Now</a></li>
               </ul>
             </nav>
             <button className="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle Menu">

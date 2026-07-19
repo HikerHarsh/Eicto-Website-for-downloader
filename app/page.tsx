@@ -40,7 +40,7 @@ export default function Home() {
                   <h1 className="hero-title">The Ultimate <br/><span className="text-gradient">Video Downloader</span></h1>
                   <p className="hero-subtitle">Detect and download videos from any website with lightning-fast speeds. The only video download manager you will ever need.</p>
                   <div className="hero-cta" id="download">
-                      <a href="https://github.com/HikerHarsh/Eicto-Download-Manager/releases/download/v1.0.0-beta/EictoSetup_v1.0.0.exe" className="btn btn-primary btn-large" target="_blank" rel="noopener noreferrer">
+                      <a href="https://github.com/HikerHarsh/Eicto-release/releases/download/v1.0.0-beta/EictoSetup_v1.0.0.exe" className="btn btn-primary btn-large" target="_blank" rel="noopener noreferrer">
                           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                           Download for Windows
                       </a>
