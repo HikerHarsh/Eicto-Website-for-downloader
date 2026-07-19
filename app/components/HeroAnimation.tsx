@@ -62,7 +62,7 @@ export default function HeroAnimation() {
                 // 3. Move down to "1080p" quality
                 await new Promise(r => setTimeout(r, 400));
                 if (!isMounted) break;
-                setCursorPos({ x: 'calc(100% - 100px)', y: '195px' }); // Move down slightly to 1080p option
+                setCursorPos({ x: 'calc(100% - 100px)', y: '215px' }); // Move down slightly to 1080p option
 
                 await new Promise(r => setTimeout(r, 800)); // Wait for movement
                 if (!isMounted) break;
