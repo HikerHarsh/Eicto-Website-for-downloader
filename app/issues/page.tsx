@@ -27,7 +27,20 @@ export default function IssuesPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState("top");
     const [currentPage, setCurrentPage] = useState(1);
+    const [upvotedIssues, setUpvotedIssues] = useState<Set<string>>(new Set());
     const ITEMS_PER_PAGE = 5; // Show 5 issues per page
+
+    // Load upvoted issues from local storage
+    useEffect(() => {
+        const stored = localStorage.getItem('upvotedIssues');
+        if (stored) {
+            try {
+                setUpvotedIssues(new Set(JSON.parse(stored)));
+            } catch (e) {
+                console.error("Failed to parse stored upvotes");
+            }
+        }
+    }, []);
     
     // Form state
     const [showForm, setShowForm] = useState(false);
@@ -107,15 +120,26 @@ export default function IssuesPage() {
     };
 
     const handleUpvote = async (id: string) => {
+        if (upvotedIssues.has(id)) return;
+
         // Optimistic update
         setIssues(issues.map(i => i._id === id ? { ...i, votes: i.votes + 1 } : i));
         
+        const newUpvotes = new Set(upvotedIssues);
+        newUpvotes.add(id);
+        setUpvotedIssues(newUpvotes);
+        localStorage.setItem('upvotedIssues', JSON.stringify(Array.from(newUpvotes)));
+        
         try {
-            await fetch(`/api/issues/${id}/vote`, { method: "POST" });
+            const res = await fetch(`/api/issues/${id}/vote`, { method: "POST" });
+            if (!res.ok) throw new Error("Failed to upvote");
         } catch (error) {
             console.error("Failed to upvote", error);
             // Revert on fail
             fetchIssues();
+            newUpvotes.delete(id);
+            setUpvotedIssues(newUpvotes);
+            localStorage.setItem('upvotedIssues', JSON.stringify(Array.from(newUpvotes)));
         }
     };
 
@@ -269,7 +293,11 @@ export default function IssuesPage() {
                             {paginatedIssues.map(issue => (
                                 <div key={issue._id} className="issue-card fade-in-up visible">
                                     <div className="vote-column">
-                                        <button className="vote-btn" onClick={() => handleUpvote(issue._id)}>
+                                        <button 
+                                            className={`vote-btn ${upvotedIssues.has(issue._id) ? 'upvoted' : ''}`} 
+                                            onClick={() => handleUpvote(issue._id)}
+                                            disabled={upvotedIssues.has(issue._id)}
+                                        >
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
                                         </button>
                                         <span className="vote-count">{issue.votes}</span>

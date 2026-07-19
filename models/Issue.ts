@@ -11,6 +11,7 @@ export interface IIssue extends Document {
   description: string;
   author: string;
   votes: number;
+  upvotedByIPs: string[];
   status: "Open" | "In Progress" | "Resolved";
   comments: IComment[];
   createdAt: Date;
@@ -28,6 +29,7 @@ const IssueSchema = new Schema<IIssue>(
     description: { type: String, required: true },
     author: { type: String, default: "Anonymous" },
     votes: { type: Number, default: 0 },
+    upvotedByIPs: { type: [String], default: [] },
     status: {
       type: String,
       enum: ["Open", "In Progress", "Resolved"],
