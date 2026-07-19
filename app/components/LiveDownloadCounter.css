@@ -1,0 +1,72 @@
+.live-download-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 24px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.live-download-counter.pulse-anim {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #22c55e;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #22c55e;
+    animation: liveBlink 1.5s infinite alternate;
+}
+
+.counter-number {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+}
+
+.counter-text {
+    font-size: 0.9rem;
+    color: #a1a1aa;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+@keyframes liveBlink {
+    0% { opacity: 0.5; box-shadow: 0 0 4px #22c55e; }
+    100% { opacity: 1; box-shadow: 0 0 12px #22c55e; }
+}
+
+.live-counter-skeleton {
+    margin-top: 24px;
+    width: 250px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-pulse {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: skeletonSweep 1.5s infinite;
+}
+
+@keyframes skeletonSweep {
+    100% { left: 200%; }
+}
