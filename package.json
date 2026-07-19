@@ -4,7 +4,10 @@
   "description": "",
   "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "repository": {
     "type": "git",
@@ -14,11 +17,17 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/HikerHarsh/Eicto-Website-for-downloader/issues"
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest"
   },
-  "homepage": "https://github.com/HikerHarsh/Eicto-Website-for-downloader#readme",
   "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
     "typescript": "^7.0.2"
   }
 }
