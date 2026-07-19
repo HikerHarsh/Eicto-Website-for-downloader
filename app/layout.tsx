@@ -4,8 +4,55 @@ import Link from "next/link";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Eicto Download Manager",
-  description: "The ultimate video download manager. Detect and download videos from various websites with a single click.",
+  title: {
+    default: "Eicto Download Manager | Best Free Video Downloader for PC",
+    template: "%s | Eicto Download Manager",
+  },
+  description: "Download videos from any website with lighting-fast speeds. Eicto is the ultimate free video download manager for Windows. Detects HD, 4K, M3U8, and MP4 videos automatically. The perfect IDM alternative.",
+  keywords: [
+    "video downloader", "free video downloader", "download videos online", "best video downloader for PC",
+    "Windows video downloader", "download manager", "Eicto", "Eicto Download Manager", "fastest video downloader",
+    "HD video downloader", "4K video downloader", "IDM alternative", "internet download manager alternative",
+    "detect and download videos", "social media video downloader", "browser video downloader", "m3u8 downloader",
+    "hls downloader", "video grabber", "download videos from any site", "free IDM", "download streaming video",
+    "video saver", "download manager for windows 11", "download manager for windows 10"
+  ],
+  authors: [{ name: "HikerHarsh" }],
+  creator: "HikerHarsh",
+  publisher: "Eicto",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    title: "Eicto Download Manager - The Ultimate Video Downloader",
+    description: "Detect and download videos from any website with lightning-fast speeds. The only video download manager you will ever need. Free, fast, and secure.",
+    url: "https://eicto.in", // Or your actual domain
+    siteName: "Eicto Download Manager",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Eicto Download Manager - Fast & Free",
+    description: "Detect and download videos from any website with lightning-fast speeds.",
+    creator: "@HikerHarsh",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: "google-site-verification=your_verification_code_here", // Placeholder
+  }
 };
 
 import AquariumBackground from "./components/AquariumBackground";
