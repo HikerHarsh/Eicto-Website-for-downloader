@@ -154,116 +154,135 @@ export default function IssuesPage() {
             <div className="container issues-container">
                 <div className="issues-header fade-in-up">
                     <h1 className="hero-title">Community <span className="text-gradient">Feedback</span></h1>
-                    <p className="hero-subtitle">Help us improve Eicto. Post issues, suggest features, and vote on what we should build next.</p>
+                    <p className="hero-subtitle">Help us shape the future of Eicto. Report bugs, suggest new features, and vote on what we should build next.</p>
                     
-                    <button 
-                        className="btn btn-primary"
-                        onClick={() => setShowForm(!showForm)}
-                        style={{ marginTop: '20px' }}
-                    >
-                        {showForm ? 'Cancel' : 'Submit Feedback'}
-                    </button>
+                    {!showForm && (
+                        <button 
+                            className="btn btn-primary"
+                            onClick={() => setShowForm(true)}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            New Issue
+                        </button>
+                    )}
                 </div>
 
                 {showForm && (
-                    <form className="glass-panel issue-form fade-in-up" onSubmit={handleCreateIssue}>
-                        <h3>New Issue or Feature Request</h3>
-                        <input 
-                            type="text" 
-                            placeholder="Title (e.g. Dark mode isn't working)" 
-                            required 
-                            className="input-field"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                        />
-                        <textarea 
-                            placeholder="Describe the issue or feature in detail..." 
-                            required 
-                            className="input-field textarea"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                        />
-                        <input 
-                            type="text" 
-                            placeholder="Your Name (Optional)" 
-                            className="input-field"
-                            value={author}
-                            onChange={(e) => setAuthor(e.target.value)}
-                        />
-                        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                            {isSubmitting ? 'Posting...' : 'Post Issue'}
-                        </button>
-                    </form>
+                    <div className="issue-form-container fade-in-up">
+                        <h3>Create New Issue</h3>
+                        <form className="issue-form" onSubmit={handleCreateIssue}>
+                            <input 
+                                type="text" 
+                                placeholder="Short, descriptive title..." 
+                                required 
+                                className="input-field"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                            />
+                            <textarea 
+                                placeholder="Describe the issue or feature in detail..." 
+                                required 
+                                className="input-field textarea"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                            />
+                            <input 
+                                type="text" 
+                                placeholder="Your Name (Optional)" 
+                                className="input-field"
+                                value={author}
+                                onChange={(e) => setAuthor(e.target.value)}
+                            />
+                            <div className="form-actions">
+                                <button type="button" className="btn-secondary" onClick={() => setShowForm(false)}>
+                                    Cancel
+                                </button>
+                                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                                    {isSubmitting ? 'Posting...' : 'Submit Issue'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 )}
 
                 <div className="issues-list fade-in-up">
                     {loading ? (
                         <div className="loading">Loading issues...</div>
                     ) : issues.length === 0 ? (
-                        <div className="empty-state">No issues posted yet. Be the first!</div>
+                        <div className="empty-state">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{marginBottom: '15px', opacity: 0.5}}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                            <br/>
+                            No issues posted yet. Be the first to suggest a feature!
+                        </div>
                     ) : (
                         issues.map(issue => (
-                            <div key={issue._id} className="glass-panel issue-card">
-                                <div className="issue-main">
-                                    <div className="vote-column">
-                                        <button className="vote-btn" onClick={() => handleUpvote(issue._id)}>
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                                        </button>
-                                        <span className="vote-count">{issue.votes}</span>
-                                    </div>
-                                    <div className="issue-content">
-                                        <div className="issue-title-row">
-                                            <h3 className="issue-title">{issue.title}</h3>
-                                            <span className={`status-badge ${issue.status.toLowerCase().replace(' ', '-')}`}>{issue.status}</span>
-                                        </div>
-                                        <p className="issue-desc">{issue.description}</p>
-                                        <div className="issue-meta">
-                                            Posted by <span className="author">{issue.author}</span> • {new Date(issue.createdAt).toLocaleDateString()}
-                                            <button className="comment-toggle" onClick={() => toggleComments(issue._id)}>
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                                                {issue.comments.length} Comments
-                                            </button>
-                                        </div>
-                                    </div>
+                            <div key={issue._id} className="issue-card">
+                                <div className="vote-column">
+                                    <button className="vote-btn" onClick={() => handleUpvote(issue._id)}>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                                    </button>
+                                    <span className="vote-count">{issue.votes}</span>
                                 </div>
-
-                                {expandedIssue === issue._id && (
-                                    <div className="comments-section">
-                                        {issue.comments.length > 0 ? (
-                                            <div className="comments-list">
-                                                {issue.comments.map(comment => (
-                                                    <div key={comment._id} className="comment">
-                                                        <div className="comment-author">{comment.author} <span className="comment-date">{new Date(comment.createdAt).toLocaleDateString()}</span></div>
-                                                        <p className="comment-text">{comment.text}</p>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <div className="no-comments">No comments yet.</div>
-                                        )}
+                                
+                                <div className="issue-content">
+                                    <div className="issue-title-row">
+                                        <h3 className="issue-title">{issue.title}</h3>
+                                        <span className={`status-badge ${issue.status.toLowerCase().replace(' ', '-')}`}>{issue.status}</span>
+                                    </div>
+                                    <p className="issue-desc">{issue.description}</p>
+                                    
+                                    <div className="issue-meta">
+                                        <span>Posted by <span className="author">{issue.author}</span></span>
+                                        <span>•</span>
+                                        <span>{new Date(issue.createdAt).toLocaleDateString()}</span>
                                         
-                                        <form className="comment-form" onSubmit={(e) => handleAddComment(e, issue._id)}>
-                                            <input 
-                                                type="text" 
-                                                placeholder="Name (Optional)" 
-                                                className="input-field small"
-                                                value={commentAuthor}
-                                                onChange={(e) => setCommentAuthor(e.target.value)}
-                                            />
-                                            <div className="comment-input-row">
+                                        <button className="comment-toggle" onClick={() => toggleComments(issue._id)}>
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                            {issue.comments.length} Comments
+                                        </button>
+                                    </div>
+                                    
+                                    {expandedIssue === issue._id && (
+                                        <div className="comments-section fade-in-up visible">
+                                            {issue.comments.length > 0 ? (
+                                                <div className="comments-list">
+                                                    {issue.comments.map(comment => (
+                                                        <div key={comment._id} className="comment">
+                                                            <div className="comment-author">
+                                                                {comment.author} 
+                                                                <span className="comment-date">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                                                            </div>
+                                                            <p className="comment-text">{comment.text}</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="no-comments">No comments yet. Start the conversation!</div>
+                                            )}
+                                            
+                                            <form className="comment-form" onSubmit={(e) => handleAddComment(e, issue._id)}>
                                                 <input 
                                                     type="text" 
-                                                    placeholder="Write a comment..." 
-                                                    required 
-                                                    className="input-field"
-                                                    value={commentText}
-                                                    onChange={(e) => setCommentText(e.target.value)}
+                                                    placeholder="Your Name (Optional)" 
+                                                    className="input-field small"
+                                                    value={commentAuthor}
+                                                    onChange={(e) => setCommentAuthor(e.target.value)}
                                                 />
-                                                <button type="submit" className="btn btn-nav" disabled={isCommenting}>Post</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                )}
+                                                <div className="comment-input-row">
+                                                    <input 
+                                                        type="text" 
+                                                        placeholder="Write a comment..." 
+                                                        required 
+                                                        className="input-field"
+                                                        value={commentText}
+                                                        onChange={(e) => setCommentText(e.target.value)}
+                                                    />
+                                                    <button type="submit" className="btn btn-primary" style={{padding: '12px 24px', fontSize: '1rem'}} disabled={isCommenting}>Post</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         ))
                     )}
