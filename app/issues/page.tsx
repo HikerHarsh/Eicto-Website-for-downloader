@@ -8,6 +8,7 @@ interface Comment {
     text: string;
     author: string;
     createdAt: string;
+    replies?: any[];
 }
 
 interface Issue {
