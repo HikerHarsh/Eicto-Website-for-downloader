@@ -91,39 +91,52 @@ export default function AquariumBackground() {
                 ctx.translate(this.x, this.y);
                 ctx.rotate(this.angle);
 
-                // Draw top-down fish (sleek, minimalist)
+                // Draw top-down fish (Cute, chubby, friendly)
                 ctx.fillStyle = this.color;
                 
-                // Body
+                // Cute Chubby Body
                 ctx.beginPath();
-                ctx.ellipse(0, 0, this.size, this.size / 3, 0, 0, Math.PI * 2);
+                ctx.ellipse(0, 0, this.size, this.size * 0.55, 0, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Tail
+                // Soft Rounded Tail
                 ctx.beginPath();
-                ctx.moveTo(-this.size + 2, 0);
-                ctx.lineTo(-this.size - this.size/1.5, -this.size/2);
-                ctx.lineTo(-this.size - this.size/1.5, this.size/2);
+                ctx.moveTo(-this.size * 0.8, 0);
+                // Curve up and back
+                ctx.quadraticCurveTo(-this.size * 1.4, -this.size * 0.6, -this.size * 1.8, -this.size * 0.4);
+                // Curve down to center
+                ctx.quadraticCurveTo(-this.size * 1.4, 0, -this.size * 1.5, 0);
+                // Curve down and back
+                ctx.quadraticCurveTo(-this.size * 1.4, 0, -this.size * 1.8, this.size * 0.4);
+                // Curve back up to body
+                ctx.quadraticCurveTo(-this.size * 1.4, this.size * 0.6, -this.size * 0.8, 0);
                 ctx.fill();
 
-                // Pectoral Fins
+                // Cute Rounded Pectoral Fins
                 ctx.beginPath();
-                ctx.moveTo(0, this.size/3);
-                ctx.lineTo(-this.size/2, this.size/1.2);
-                ctx.lineTo(this.size/4, this.size/3);
+                ctx.ellipse(this.size * 0.1, this.size * 0.48, this.size * 0.35, this.size * 0.25, Math.PI / 4, 0, Math.PI * 2);
                 ctx.fill();
 
                 ctx.beginPath();
-                ctx.moveTo(0, -this.size/3);
-                ctx.lineTo(-this.size/2, -this.size/1.2);
-                ctx.lineTo(this.size/4, -this.size/3);
+                ctx.ellipse(this.size * 0.1, -this.size * 0.48, this.size * 0.35, this.size * 0.25, -Math.PI / 4, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Eye glow (optional tech feel)
-                ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+                // Cute Big Eyes
+                ctx.fillStyle = "rgba(255, 255, 255, 0.7)"; // Brighter whites for eyes
                 ctx.beginPath();
-                ctx.arc(this.size/2, -this.size/6, 1.5, 0, Math.PI * 2);
-                ctx.arc(this.size/2, this.size/6, 1.5, 0, Math.PI * 2);
+                ctx.arc(this.size * 0.6, -this.size * 0.25, this.size * 0.12, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(this.size * 0.6, this.size * 0.25, this.size * 0.12, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Dark pupils
+                ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+                ctx.beginPath();
+                ctx.arc(this.size * 0.65, -this.size * 0.25, this.size * 0.05, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(this.size * 0.65, this.size * 0.25, this.size * 0.05, 0, Math.PI * 2);
                 ctx.fill();
 
                 ctx.restore();
