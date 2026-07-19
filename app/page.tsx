@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import HeroAnimation from "./components/HeroAnimation";
 
 export default function Home() {
   useEffect(() => {
@@ -47,39 +48,7 @@ export default function Home() {
                   </div>
               </div>
               <div className="hero-visual fade-in-up delay-1">
-                  <div className="mockup-window">
-                      <div className="mockup-header">
-                          <span className="dot"></span>
-                          <span className="dot"></span>
-                          <span className="dot"></span>
-                      </div>
-                      <div className="mockup-body">
-                          <div className="mockup-row">
-                              <div className="file-icon bg-blue"></div>
-                              <div className="file-details">
-                                  <div className="file-name">Cinematic_B-Roll_4K.mp4</div>
-                                  <div className="file-progress-bar"><div className="progress" style={{ width: '75%' }}></div></div>
-                              </div>
-                              <div className="file-speed">45 MB/s</div>
-                          </div>
-                          <div className="mockup-row">
-                              <div className="file-icon bg-purple"></div>
-                              <div className="file-details">
-                                  <div className="file-name">Tutorial_Part_1.mkv</div>
-                                  <div className="file-progress-bar"><div className="progress" style={{ width: '100%' }}></div></div>
-                              </div>
-                              <div className="file-speed text-green">Completed</div>
-                          </div>
-                          <div className="mockup-row">
-                              <div className="file-icon bg-orange"></div>
-                              <div className="file-details">
-                                  <div className="file-name">Music_Video_1080p.mp4</div>
-                                  <div className="file-progress-bar"><div className="progress" style={{ width: '30%' }}></div></div>
-                              </div>
-                              <div className="file-speed">12 MB/s</div>
-                          </div>
-                      </div>
-                  </div>
+                  <HeroAnimation />
               </div>
           </div>
       </section>
