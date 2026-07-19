@@ -126,7 +126,7 @@ export default function HeroAnimation() {
                     </div>
                     <div className="mockup-url-bar">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                        youtube.com/watch?v=awesome
+                        videosite.com/watch?v=awesome
                     </div>
                     <div className="mockup-extensions">
                         <div className={`ext-icon ${extensionGlowing ? 'glowing' : ''}`}>
