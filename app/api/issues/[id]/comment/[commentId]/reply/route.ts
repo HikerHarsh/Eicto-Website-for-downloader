@@ -25,7 +25,7 @@ export async function POST(
       return NextResponse.json({ error: "Issue not found" }, { status: 404 });
     }
 
-    const comment = issue.comments.id(commentId);
+    const comment = (issue.comments as any).id(commentId);
     if (!comment) {
       return NextResponse.json({ error: "Comment not found" }, { status: 404 });
     }
