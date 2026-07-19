@@ -1,9 +1,18 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
-export interface IComment {
+export interface IReply {
+  _id?: string;
   text: string;
   author: string;
   createdAt: Date;
+}
+
+export interface IComment {
+  _id: string;
+  text: string;
+  author: string;
+  createdAt: Date;
+  replies: IReply[];
 }
 
 export interface IIssue extends Document {
@@ -17,10 +26,17 @@ export interface IIssue extends Document {
   createdAt: Date;
 }
 
+const ReplySchema = new Schema<IReply>({
+  text: { type: String, required: true },
+  author: { type: String, default: "Anonymous" },
+  createdAt: { type: Date, default: Date.now },
+});
+
 const CommentSchema = new Schema<IComment>({
   text: { type: String, required: true },
   author: { type: String, default: "Anonymous" },
   createdAt: { type: Date, default: Date.now },
+  replies: { type: [ReplySchema], default: [] },
 });
 
 const IssueSchema = new Schema<IIssue>(

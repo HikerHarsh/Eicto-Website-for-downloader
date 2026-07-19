@@ -55,6 +55,13 @@ export default function IssuesPage() {
     const [commentAuthor, setCommentAuthor] = useState("");
     const [isCommenting, setIsCommenting] = useState(false);
 
+    // Reply state
+    const [replyingToCommentId, setReplyingToCommentId] = useState<string | null>(null);
+    const [replyText, setReplyText] = useState("");
+    const [replyAuthor, setReplyAuthor] = useState("");
+    const [isReplying, setIsReplying] = useState(false);
+
+    // Fetch issues on load
     useEffect(() => {
         fetchIssues();
 
@@ -164,6 +171,31 @@ export default function IssuesPage() {
             console.error("Failed to add comment", error);
         } finally {
             setIsCommenting(false);
+        }
+    };
+
+    const handleAddReply = async (e: React.FormEvent, issueId: string, commentId: string) => {
+        e.preventDefault();
+        if (!replyText.trim()) return;
+        
+        setIsReplying(true);
+        try {
+            const res = await fetch(`/api/issues/${issueId}/comment/${commentId}/reply`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: replyText, author: replyAuthor })
+            });
+            
+            if (res.ok) {
+                setReplyText("");
+                setReplyAuthor("");
+                setReplyingToCommentId(null);
+                fetchIssues(); // Refresh to get new reply
+            }
+        } catch (error) {
+            console.error("Failed to add reply", error);
+        } finally {
+            setIsReplying(false);
         }
     };
 
@@ -332,6 +364,51 @@ export default function IssuesPage() {
                                                                     <span className="comment-date">{new Date(comment.createdAt).toLocaleDateString()}</span>
                                                                 </div>
                                                                 <p className="comment-text">{comment.text}</p>
+                                                                
+                                                                <button 
+                                                                    className="reply-toggle-btn" 
+                                                                    onClick={() => setReplyingToCommentId(replyingToCommentId === comment._id ? null : comment._id)}
+                                                                >
+                                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 10 20 15 15 20"></polyline><path d="M4 4v7a4 4 0 0 0 4 4h12"></path></svg>
+                                                                    Reply
+                                                                </button>
+                                                                
+                                                                {comment.replies && comment.replies.length > 0 && (
+                                                                    <div className="replies-list">
+                                                                        {comment.replies.map((reply: any) => (
+                                                                            <div key={reply._id || new Date(reply.createdAt).getTime()} className="reply">
+                                                                                <div className="comment-author">
+                                                                                    {reply.author} 
+                                                                                    <span className="comment-date">{new Date(reply.createdAt).toLocaleDateString()}</span>
+                                                                                </div>
+                                                                                <p className="comment-text">{reply.text}</p>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
+
+                                                                {replyingToCommentId === comment._id && (
+                                                                    <form className="comment-form reply-form" onSubmit={(e) => handleAddReply(e, issue._id, comment._id)}>
+                                                                        <input 
+                                                                            type="text" 
+                                                                            placeholder="Your Name (Optional)" 
+                                                                            className="input-field small"
+                                                                            value={replyAuthor}
+                                                                            onChange={(e) => setReplyAuthor(e.target.value)}
+                                                                        />
+                                                                        <div className="comment-input-row">
+                                                                            <input 
+                                                                                type="text" 
+                                                                                placeholder="Write a reply..." 
+                                                                                required 
+                                                                                className="input-field"
+                                                                                value={replyText}
+                                                                                onChange={(e) => setReplyText(e.target.value)}
+                                                                            />
+                                                                            <button type="submit" className="btn btn-primary" style={{padding: '8px 16px', fontSize: '0.9rem'}} disabled={isReplying}>Post Reply</button>
+                                                                        </div>
+                                                                    </form>
+                                                                )}
                                                             </div>
                                                         ))}
                                                     </div>
