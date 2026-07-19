@@ -103,10 +103,21 @@ export default function HeroAnimation() {
         };
     }, []);
 
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        e.currentTarget.style.setProperty('--mouse-x', `${x}px`);
+        e.currentTarget.style.setProperty('--mouse-y', `${y}px`);
+    };
+
     return (
         <div className="hero-animation-container">
             {/* The Main Browser Mockup */}
-            <div className={`browser-mockup ${showEictoApp ? 'blur-bg' : ''}`}>
+            <div 
+                className={`browser-mockup ${showEictoApp ? 'blur-bg' : ''}`}
+                onMouseMove={handleMouseMove}
+            >
                 <div className="mockup-header">
                     <div className="window-controls">
                         <span className="dot"></span>
