@@ -1,140 +1,243 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import "./AquariumBackground.css";
 
-interface Fish {
-    id: number;
-    top: number;
-    duration: number;
-    delay: number;
-    scale: number;
-    direction: 'left' | 'right';
-}
-
-interface Bubble {
-    id: number;
-    left: number;
-    size: number;
-    duration: number;
-}
-
-interface CursorBubble {
-    id: number;
-    x: number;
-    y: number;
-    size: number;
-}
-
 export default function AquariumBackground() {
-    const [fishes, setFishes] = useState<Fish[]>([]);
-    const [bubbles, setBubbles] = useState<Bubble[]>([]);
-    const [cursorBubbles, setCursorBubbles] = useState<CursorBubble[]>([]);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
-        // Generate 15 fishes
-        const newFishes: Fish[] = Array.from({ length: 15 }).map((_, i) => ({
-            id: i,
-            top: Math.random() * 90, // 0 to 90vh
-            duration: 15 + Math.random() * 20, // 15s to 35s to cross screen
-            delay: Math.random() * -30, // Start at different times (negative delay means already on screen)
-            scale: 0.5 + Math.random() * 0.8, // Different sizes
-            direction: Math.random() > 0.5 ? 'left' : 'right'
-        }));
-        setFishes(newFishes);
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
 
-        // Generate ambient bubbles
-        const newBubbles: Bubble[] = Array.from({ length: 20 }).map((_, i) => ({
-            id: i,
-            left: Math.random() * 100, // 0 to 100vw
-            size: 4 + Math.random() * 10,
-            duration: 5 + Math.random() * 10
-        }));
-        setBubbles(newBubbles);
-    }, []);
+        let animationFrameId: number;
+        let width = window.innerWidth;
+        let height = window.innerHeight;
 
-    // Cursor hover bubble effect
-    const handleMouseMove = useCallback((e: MouseEvent) => {
-        // Only create a bubble every few pixels to avoid lagging
-        if (Math.random() > 0.85) {
-            const newBubble: CursorBubble = {
-                id: Date.now() + Math.random(),
-                x: e.clientX,
-                y: e.clientY,
-                size: 8 + Math.random() * 12
-            };
-            
-            setCursorBubbles(prev => [...prev, newBubble]);
-
-            // Remove bubble after animation ends (approx 2s)
-            setTimeout(() => {
-                setCursorBubbles(prev => prev.filter(b => b.id !== newBubble.id));
-            }, 2000);
-        }
-    }, []);
-
-    useEffect(() => {
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
+        const resize = () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
         };
-    }, [handleMouseMove]);
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Fish {
+            x: number;
+            y: number;
+            vx: number;
+            vy: number;
+            size: number;
+            color: string;
+            targetAngle: number;
+            angle: number;
+            speed: number;
+            baseSpeed: number;
+            scared: number;
+
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.angle = Math.random() * Math.PI * 2;
+                this.targetAngle = this.angle;
+                this.baseSpeed = 0.5 + Math.random() * 1;
+                this.speed = this.baseSpeed;
+                this.vx = Math.cos(this.angle) * this.speed;
+                this.vy = Math.sin(this.angle) * this.speed;
+                this.size = 15 + Math.random() * 15;
+                this.color = `rgba(255, 255, 255, ${0.1 + Math.random() * 0.15})`;
+                this.scared = 0;
+            }
+
+            update() {
+                // If scared, run fast, slowly reduce scare factor
+                if (this.scared > 0) {
+                    this.speed = this.baseSpeed + (this.scared * 10);
+                    this.scared -= 0.02;
+                    if (this.scared < 0) this.scared = 0;
+                } else {
+                    this.speed = this.baseSpeed;
+                    
+                    // Wander randomly
+                    if (Math.random() < 0.02) {
+                        this.targetAngle += (Math.random() - 0.5) * Math.PI;
+                    }
+                }
+
+                // Smoothly rotate towards target angle
+                const angleDiff = this.targetAngle - this.angle;
+                // Normalize angleDiff to -PI to PI
+                let normalizedDiff = Math.atan2(Math.sin(angleDiff), Math.cos(angleDiff));
+                this.angle += normalizedDiff * 0.05;
+
+                this.vx = Math.cos(this.angle) * this.speed;
+                this.vy = Math.sin(this.angle) * this.speed;
+
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Wrap around edges smoothly
+                if (this.x < -this.size * 2) this.x = width + this.size * 2;
+                if (this.x > width + this.size * 2) this.x = -this.size * 2;
+                if (this.y < -this.size * 2) this.y = height + this.size * 2;
+                if (this.y > height + this.size * 2) this.y = -this.size * 2;
+            }
+
+            draw(ctx: CanvasRenderingContext2D) {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+
+                // Draw top-down fish (sleek, minimalist)
+                ctx.fillStyle = this.color;
+                
+                // Body
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size, this.size / 3, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Tail
+                ctx.beginPath();
+                ctx.moveTo(-this.size + 2, 0);
+                ctx.lineTo(-this.size - this.size/1.5, -this.size/2);
+                ctx.lineTo(-this.size - this.size/1.5, this.size/2);
+                ctx.fill();
+
+                // Pectoral Fins
+                ctx.beginPath();
+                ctx.moveTo(0, this.size/3);
+                ctx.lineTo(-this.size/2, this.size/1.2);
+                ctx.lineTo(this.size/4, this.size/3);
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size/3);
+                ctx.lineTo(-this.size/2, -this.size/1.2);
+                ctx.lineTo(this.size/4, -this.size/3);
+                ctx.fill();
+
+                // Eye glow (optional tech feel)
+                ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+                ctx.beginPath();
+                ctx.arc(this.size/2, -this.size/6, 1.5, 0, Math.PI * 2);
+                ctx.arc(this.size/2, this.size/6, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+        }
+
+        class Ripple {
+            x: number;
+            y: number;
+            radius: number;
+            maxRadius: number;
+            opacity: number;
+
+            constructor(x: number, y: number, isClick: boolean = false) {
+                this.x = x;
+                this.y = y;
+                this.radius = 1;
+                this.maxRadius = isClick ? 150 : 50;
+                this.opacity = isClick ? 0.8 : 0.3;
+            }
+
+            update() {
+                this.radius += 1.5;
+                this.opacity -= 0.01;
+            }
+
+            draw(ctx: CanvasRenderingContext2D) {
+                if (this.opacity <= 0) return;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+        }
+
+        const fishes: Fish[] = Array.from({ length: 15 }, () => new Fish());
+        let ripples: Ripple[] = [];
+        let lastMousePos = { x: 0, y: 0 };
+
+        const render = () => {
+            // Clear canvas completely each frame
+            ctx.clearRect(0, 0, width, height);
+
+            // Update and draw fishes
+            fishes.forEach(fish => {
+                fish.update();
+                fish.draw(ctx);
+            });
+
+            // Update and draw ripples
+            ripples.forEach(ripple => {
+                ripple.update();
+                ripple.draw(ctx);
+            });
+
+            // Clean up dead ripples
+            ripples = ripples.filter(r => r.opacity > 0);
+
+            animationFrameId = requestAnimationFrame(render);
+        };
+
+        render();
+
+        // Interactions
+        const handleMouseMove = (e: MouseEvent) => {
+            const dx = e.clientX - lastMousePos.x;
+            const dy = e.clientY - lastMousePos.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            // Spawn a ripple if mouse moved enough
+            if (distance > 30) {
+                ripples.push(new Ripple(e.clientX, e.clientY));
+                lastMousePos = { x: e.clientX, y: e.clientY };
+            }
+        };
+
+        const handleClick = (e: MouseEvent) => {
+            // Spawn a big click ripple
+            ripples.push(new Ripple(e.clientX, e.clientY, true));
+            ripples.push(new Ripple(e.clientX, e.clientY, true));
+            setTimeout(() => {
+                ripples.push(new Ripple(e.clientX, e.clientY, true));
+            }, 100);
+
+            // Scare fishes!
+            fishes.forEach(fish => {
+                const dx = fish.x - e.clientX;
+                const dy = fish.y - e.clientY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 300) { // Detection radius
+                    fish.scared = 1; // Max scare
+                    // Dart away from the click
+                    fish.targetAngle = Math.atan2(dy, dx);
+                }
+            });
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('click', handleClick);
+
+        return () => {
+            window.removeEventListener('resize', resize);
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('click', handleClick);
+            cancelAnimationFrame(animationFrameId);
+        };
+    }, []);
 
     return (
-        <div className="aquarium-container">
-            {/* Ambient Background Bubbles */}
-            {bubbles.map(bubble => (
-                <div 
-                    key={bubble.id} 
-                    className="ambient-bubble"
-                    style={{
-                        left: `${bubble.left}vw`,
-                        width: `${bubble.size}px`,
-                        height: `${bubble.size}px`,
-                        animationDuration: `${bubble.duration}s`,
-                        animationDelay: `-${Math.random() * bubble.duration}s`
-                    }}
-                />
-            ))}
-
-            {/* Hover Cursor Bubbles */}
-            {cursorBubbles.map(bubble => (
-                <div 
-                    key={bubble.id} 
-                    className="cursor-bubble"
-                    style={{
-                        left: `${bubble.x}px`,
-                        top: `${bubble.y}px`,
-                        width: `${bubble.size}px`,
-                        height: `${bubble.size}px`,
-                    }}
-                />
-            ))}
-
-            {/* Fishes */}
-            {fishes.map(fish => (
-                <div 
-                    key={fish.id} 
-                    className={`fish-wrapper animate-${fish.direction}`}
-                    style={{
-                        top: `${fish.top}vh`,
-                        animationDuration: `${fish.duration}s`,
-                        animationDelay: `${fish.delay}s`,
-                        transform: `scale(${fish.scale})`
-                    }}
-                >
-                    {/* Simple SVG Fish */}
-                    <svg viewBox="0 0 100 50" className="fish-svg">
-                        <path 
-                            d="M 80,25 Q 90,10 100,5 L 95,25 L 100,45 Q 90,40 80,25 Z M 10,25 Q 30,5 50,5 Q 70,5 85,25 Q 70,45 50,45 Q 30,45 10,25 Z M 20,25 A 3,3 0 1,1 20,24.9 Z" 
-                            fill="rgba(255,255,255,0.15)"
-                            stroke="rgba(255,255,255,0.3)"
-                            strokeWidth="1"
-                        />
-                        <path d="M 40,25 Q 50,15 60,25 Q 50,35 40,25 Z" fill="rgba(255,255,255,0.05)" />
-                    </svg>
-                </div>
-            ))}
-        </div>
+        <canvas 
+            ref={canvasRef} 
+            className="aquarium-canvas" 
+        />
     );
 }
