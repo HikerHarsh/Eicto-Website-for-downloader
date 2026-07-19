@@ -7,6 +7,22 @@ export default function InstallGuide() {
     useEffect(() => {
         let isCancelled = false;
 
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            },
+            { threshold: 0.1 }
+        );
+
+        document.querySelectorAll('.fade-in-up').forEach(element => {
+            observer.observe(element);
+        });
+
         // Virtual Cursor Animation for Install Page
         const cursor = document.getElementById('virtualCursor') as HTMLElement | null;
         if (cursor) {
