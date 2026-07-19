@@ -55,6 +55,20 @@ export default function TermsPage() {
           </p>
         </section>
 
+        <section className="terms-section">
+          <h2>6. Third-Party Platforms & Technologies</h2>
+          <p>
+            Eicto Download Manager acts purely as a data-fetching utility. We do not host, store, or stream any third-party content on our servers. When you use Eicto to download files (including but not limited to DRM-protected content or encrypted media), the connection is made directly between your local machine and the third-party server. We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party websites or services.
+          </p>
+        </section>
+
+        <section className="terms-section">
+          <h2>7. Licensing & Premium Features</h2>
+          <p>
+            While Eicto Download Manager may currently be offered for free, the developers reserve the right to introduce commercial licensing, premium tiers, or paid subscriptions in the future. Your continued use of the Software implies acceptance of the licensing terms in effect at the time of use.
+          </p>
+        </section>
+
         <div className="terms-footer">
           <Link href="/" className="btn btn-primary">Return to Home</Link>
         </div>
