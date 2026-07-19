@@ -25,6 +25,7 @@ export default function IssuesPage() {
     const [issues, setIssues] = useState<Issue[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
+    const [sortBy, setSortBy] = useState("top");
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 5; // Show 5 issues per page
     
@@ -157,13 +158,21 @@ export default function IssuesPage() {
         issue.description.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Reset to page 1 when search query changes
+    const sortedIssues = [...filteredIssues].sort((a, b) => {
+        if (sortBy === 'top') {
+            return b.votes - a.votes;
+        } else {
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        }
+    });
+
+    // Reset to page 1 when search query or sort order changes
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchQuery]);
+    }, [searchQuery, sortBy]);
 
-    const totalPages = Math.ceil(filteredIssues.length / ITEMS_PER_PAGE);
-    const paginatedIssues = filteredIssues.slice(
+    const totalPages = Math.ceil(sortedIssues.length / ITEMS_PER_PAGE);
+    const paginatedIssues = sortedIssues.slice(
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
     );
@@ -187,6 +196,15 @@ export default function IssuesPage() {
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </div>
+                    
+                    <select 
+                        className="sort-select" 
+                        value={sortBy} 
+                        onChange={(e) => setSortBy(e.target.value)}
+                    >
+                        <option value="top">Highest Voted</option>
+                        <option value="latest">Newest First</option>
+                    </select>
 
                     {!showForm && (
                         <button 
