@@ -21,7 +21,13 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
       </head>
       <body>
-        <header className="header" id="header">
+        <div className="liquid-bg">
+            <div className="blob blob-1"></div>
+            <div className="blob blob-2"></div>
+            <div className="blob blob-3"></div>
+            <div className="blob blob-4"></div>
+        </div>
+        <header className="header glass-panel" id="header">
           <div className="container header-content">
             <Link href="/" className="logo-wrapper">
               <img src="/assets/logo.png" alt="Eicto Download Manager Logo" className="logo" />

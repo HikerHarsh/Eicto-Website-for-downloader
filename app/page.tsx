@@ -34,7 +34,6 @@ export default function Home() {
     <main>
       {/* Hero Section */}
       <section className="hero">
-          <div className="hero-bg-glow"></div>
           <div className="container hero-container">
               <div className="hero-text fade-in-up">
                   <h1 className="hero-title">The Ultimate <br/><span className="text-gradient">Video Downloader</span></h1>
