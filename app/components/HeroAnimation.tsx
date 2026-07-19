@@ -10,6 +10,8 @@ export default function HeroAnimation() {
     const [downloadProgress, setDownloadProgress] = useState(0);
     const [hoverDownloadBtn, setHoverDownloadBtn] = useState(false);
     const [hover1080p, setHover1080p] = useState(false);
+    const [extensionGlowing, setExtensionGlowing] = useState(false);
+    const [showDownloadBtn, setShowDownloadBtn] = useState(false);
 
     useEffect(() => {
         let isMounted = true;
@@ -24,9 +26,23 @@ export default function HeroAnimation() {
                 setDownloadProgress(0);
                 setHoverDownloadBtn(false);
                 setHover1080p(false);
+                setExtensionGlowing(false);
+                setShowDownloadBtn(false);
 
-                // 1. Move to Eicto float button on video (approx center top right)
-                await new Promise(r => setTimeout(r, 1000));
+                // 0. Initial pause, then Eicto extension detects video
+                await new Promise(r => setTimeout(r, 800));
+                if (!isMounted) break;
+                setExtensionGlowing(true); // Extension icon glows
+
+                await new Promise(r => setTimeout(r, 600));
+                if (!isMounted) break;
+                setShowDownloadBtn(true); // Button appears on video
+                await new Promise(r => setTimeout(r, 400));
+                if (!isMounted) break;
+                setExtensionGlowing(false);
+
+                // 1. Move to Eicto float button on video
+                await new Promise(r => setTimeout(r, 200));
                 if (!isMounted) break;
                 setCursorPos({ x: 'calc(100% - 75px)', y: '30px' }); // Adjust to match top-right of video
                 
@@ -92,9 +108,20 @@ export default function HeroAnimation() {
             {/* The Main Browser Mockup */}
             <div className={`browser-mockup ${showEictoApp ? 'blur-bg' : ''}`}>
                 <div className="mockup-header">
-                    <span className="dot"></span>
-                    <span className="dot"></span>
-                    <span className="dot"></span>
+                    <div className="window-controls">
+                        <span className="dot"></span>
+                        <span className="dot"></span>
+                        <span className="dot"></span>
+                    </div>
+                    <div className="mockup-url-bar">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        youtube.com/watch?v=awesome
+                    </div>
+                    <div className="mockup-extensions">
+                        <div className={`ext-icon ${extensionGlowing ? 'glowing' : ''}`}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        </div>
+                    </div>
                 </div>
                 <div className="mockup-body video-player-mockup">
                     <div className="video-placeholder">
@@ -102,7 +129,7 @@ export default function HeroAnimation() {
                         <div className="video-progress-bar"></div>
                         
                         {/* Eicto Floating Button */}
-                        <div className={`eicto-float-btn ${hoverDownloadBtn ? 'simulated-hover' : ''}`}>
+                        <div className={`eicto-float-btn ${hoverDownloadBtn ? 'simulated-hover' : ''} ${showDownloadBtn ? 'visible' : ''}`}>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                             Download
                         </div>
