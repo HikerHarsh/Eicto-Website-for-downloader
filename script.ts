@@ -1,22 +1,14 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 document.addEventListener('DOMContentLoaded', () => {
     // Mobile Menu Toggle
-    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-    const nav = document.querySelector('.nav');
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn') as HTMLElement | null;
+    const nav = document.querySelector('.nav') as HTMLElement | null;
+
     if (mobileMenuBtn && nav) {
         mobileMenuBtn.addEventListener('click', () => {
             mobileMenuBtn.classList.toggle('active');
             nav.classList.toggle('active');
         });
+
         // Close mobile menu when clicking a link
         document.querySelectorAll('.nav-link, .btn-nav').forEach((link) => {
             link.addEventListener('click', () => {
@@ -25,24 +17,26 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
     // Header scroll effect
-    const header = document.getElementById('header');
+    const header = document.getElementById('header') as HTMLElement | null;
     if (header) {
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
                 header.classList.add('scrolled');
-            }
-            else {
+            } else {
                 header.classList.remove('scrolled');
             }
         });
     }
+
     // Intersection Observer for scroll animations
-    const observerOptions = {
+    const observerOptions: IntersectionObserverInit = {
         root: null,
         rootMargin: '0px',
         threshold: 0.15
     };
+
     const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -51,21 +45,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }, observerOptions);
+
     // Observe all elements with .fade-in-up
     document.querySelectorAll('.fade-in-up').forEach((element) => {
         observer.observe(element);
     });
+
     // Virtual Cursor Animation for Install Page
-    const cursor = document.getElementById('virtualCursor');
+    const cursor = document.getElementById('virtualCursor') as HTMLElement | null;
     if (cursor) {
-        const typeText = document.getElementById('typeText');
-        const typeCursor = document.getElementById('typeCursor');
-        const devToggle = document.getElementById('devToggle');
-        const devToolbar = document.getElementById('devToolbar');
-        const loadBtn = document.getElementById('loadUnpackedBtn');
-        const eictoExtCard = document.getElementById('eictoExtCard');
+        const typeText = document.getElementById('typeText') as HTMLElement;
+        const typeCursor = document.getElementById('typeCursor') as HTMLElement | null;
+        const devToggle = document.getElementById('devToggle') as HTMLElement;
+        const devToolbar = document.getElementById('devToolbar') as HTMLElement;
+        const loadBtn = document.getElementById('loadUnpackedBtn') as HTMLElement;
+        const eictoExtCard = document.getElementById('eictoExtCard') as HTMLElement;
         const textToType = "chrome://extensions";
-        const moveCursorTo = (element, offsetX = 0, offsetY = 0) => {
+        
+        const moveCursorTo = (element: HTMLElement | null, offsetX: number = 0, offsetY: number = 0): Promise<void> => {
             return new Promise(resolve => {
                 if (!element) {
                     resolve();
@@ -74,12 +71,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const rect = element.getBoundingClientRect();
                 const x = rect.left + window.scrollX + rect.width / 2 + offsetX;
                 const y = rect.top + window.scrollY + rect.height / 2 + offsetY;
+                
                 cursor.style.left = `${x}px`;
                 cursor.style.top = `${y}px`;
+                
                 setTimeout(resolve, 1200);
             });
         };
-        const clickCursor = () => {
+
+        const clickCursor = (): Promise<void> => {
             return new Promise(resolve => {
                 cursor.classList.add('clicking');
                 setTimeout(() => {
@@ -88,7 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 150);
             });
         };
-        const typeEffect = (text, element) => {
+
+        const typeEffect = (text: string, element: HTMLElement): Promise<void> => {
             return new Promise(resolve => {
                 element.textContent = '';
                 let i = 0;
@@ -97,40 +98,45 @@ document.addEventListener('DOMContentLoaded', () => {
                         element.textContent += text.charAt(i);
                         i++;
                         setTimeout(typeChar, 80);
-                    }
-                    else {
+                    } else {
                         setTimeout(resolve, 500);
                     }
                 };
                 typeChar();
             });
         };
-        const runAnimationSequence = () => __awaiter(void 0, void 0, void 0, function* () {
+
+        const runAnimationSequence = async () => {
             cursor.classList.add('visible');
+            
             // Reset state
             typeText.textContent = '';
-            if (typeCursor)
-                typeCursor.style.display = 'inline-block';
+            if (typeCursor) typeCursor.style.display = 'inline-block';
             devToggle.classList.remove('active');
             devToolbar.classList.remove('active');
             eictoExtCard.classList.remove('visible');
+            
             // 1. Move to address bar
-            yield moveCursorTo(typeText, 30, 0);
-            yield clickCursor();
+            await moveCursorTo(typeText, 30, 0);
+            await clickCursor();
+            
             // Type text
-            yield typeEffect(textToType, typeText);
-            if (typeCursor)
-                typeCursor.style.display = 'none';
-            yield new Promise(r => setTimeout(r, 600));
+            await typeEffect(textToType, typeText);
+            if (typeCursor) typeCursor.style.display = 'none';
+            await new Promise(r => setTimeout(r, 600));
+
             // 2. Move to toggle
-            yield moveCursorTo(devToggle, 0, 0);
-            yield clickCursor();
+            await moveCursorTo(devToggle, 0, 0);
+            await clickCursor();
             devToggle.classList.add('active');
             devToolbar.classList.add('active');
-            yield new Promise(r => setTimeout(r, 800));
+            
+            await new Promise(r => setTimeout(r, 800));
+
             // 3. Move to Load Unpacked button
-            yield moveCursorTo(loadBtn, 0, 0);
-            yield clickCursor();
+            await moveCursorTo(loadBtn, 0, 0);
+            await clickCursor();
+            
             // Show active state on button
             loadBtn.style.transform = 'scale(0.95)';
             loadBtn.style.background = '#e5e7eb';
@@ -138,19 +144,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadBtn.style.transform = 'scale(1)';
                 loadBtn.style.background = '#fff';
             }, 150);
-            yield new Promise(r => setTimeout(r, 600));
+
+            await new Promise(r => setTimeout(r, 600));
+
             // 4. Show folder dialog
-            const folderDialog = document.getElementById('folderDialog');
-            const folderPath = document.querySelector('.folder-path');
-            const folderBody = document.querySelector('.folder-body');
-            const selectFolderBtn = document.getElementById('selectFolderBtn');
+            const folderDialog = document.getElementById('folderDialog') as HTMLElement | null;
+            const folderPath = document.querySelector('.folder-path') as HTMLElement | null;
+            const folderBody = document.querySelector('.folder-body') as HTMLElement | null;
+            const selectFolderBtn = document.getElementById('selectFolderBtn') as HTMLElement | null;
+            
             if (folderDialog && selectFolderBtn && folderPath && folderBody) {
                 // Helper for double click
-                const doubleClickCursor = () => __awaiter(void 0, void 0, void 0, function* () {
-                    yield clickCursor();
-                    yield new Promise(r => setTimeout(r, 50));
-                    yield clickCursor();
-                });
+                const doubleClickCursor = async () => {
+                    await clickCursor();
+                    await new Promise(r => setTimeout(r, 50));
+                    await clickCursor();
+                };
+
                 // Initial State: This PC
                 folderPath.textContent = 'This PC';
                 folderBody.innerHTML = `
@@ -160,15 +170,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
                 folderDialog.classList.add('active');
-                yield new Promise(r => setTimeout(r, 600));
+                await new Promise(r => setTimeout(r, 600));
+
                 // Move to Local Disk C
-                const driveC = document.getElementById('driveC');
-                yield moveCursorTo(driveC, 0, 0);
-                yield clickCursor();
-                if (driveC)
-                    driveC.classList.add('selected');
-                yield new Promise(r => setTimeout(r, 200));
-                yield doubleClickCursor();
+                const driveC = document.getElementById('driveC') as HTMLElement | null;
+                await moveCursorTo(driveC, 0, 0);
+                await clickCursor();
+                if (driveC) driveC.classList.add('selected');
+                await new Promise(r => setTimeout(r, 200));
+                await doubleClickCursor();
+
                 // State: C:\
                 folderPath.textContent = 'C:\\\\';
                 folderBody.innerHTML = `
@@ -177,15 +188,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         Program Files
                     </div>
                 `;
-                yield new Promise(r => setTimeout(r, 400));
+                await new Promise(r => setTimeout(r, 400));
+
                 // Move to Program Files
-                const progFiles = document.getElementById('progFiles');
-                yield moveCursorTo(progFiles, 0, 0);
-                yield clickCursor();
-                if (progFiles)
-                    progFiles.classList.add('selected');
-                yield new Promise(r => setTimeout(r, 200));
-                yield doubleClickCursor();
+                const progFiles = document.getElementById('progFiles') as HTMLElement | null;
+                await moveCursorTo(progFiles, 0, 0);
+                await clickCursor();
+                if (progFiles) progFiles.classList.add('selected');
+                await new Promise(r => setTimeout(r, 200));
+                await doubleClickCursor();
+
                 // State: C:\Program Files
                 folderPath.textContent = 'C:\\\\Program Files';
                 folderBody.innerHTML = `
@@ -194,15 +206,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         Eicto Download Manager
                     </div>
                 `;
-                yield new Promise(r => setTimeout(r, 400));
+                await new Promise(r => setTimeout(r, 400));
+
                 // Move to Eicto Folder
-                const eictoFolder = document.getElementById('eictoFolder');
-                yield moveCursorTo(eictoFolder, 0, 0);
-                yield clickCursor();
-                if (eictoFolder)
-                    eictoFolder.classList.add('selected');
-                yield new Promise(r => setTimeout(r, 200));
-                yield doubleClickCursor();
+                const eictoFolder = document.getElementById('eictoFolder') as HTMLElement | null;
+                await moveCursorTo(eictoFolder, 0, 0);
+                await clickCursor();
+                if (eictoFolder) eictoFolder.classList.add('selected');
+                await new Promise(r => setTimeout(r, 200));
+                await doubleClickCursor();
+
                 // State: C:\Program Files\Eicto Download Manager
                 folderPath.textContent = 'C:\\\\Program Files\\\\Eicto Download Manager';
                 folderBody.innerHTML = `
@@ -219,39 +232,49 @@ document.addEventListener('DOMContentLoaded', () => {
                         eicto.exe
                     </div>
                 `;
-                yield new Promise(r => setTimeout(r, 400));
+                await new Promise(r => setTimeout(r, 400));
+
                 // Move to extension folder
-                const extFolderItem = document.getElementById('extFolderItem');
-                yield moveCursorTo(extFolderItem, 0, 0);
-                yield clickCursor();
-                if (extFolderItem)
-                    extFolderItem.classList.add('selected');
-                yield new Promise(r => setTimeout(r, 600));
+                const extFolderItem = document.getElementById('extFolderItem') as HTMLElement | null;
+                await moveCursorTo(extFolderItem, 0, 0);
+                await clickCursor();
+                if (extFolderItem) extFolderItem.classList.add('selected');
+                
+                await new Promise(r => setTimeout(r, 600));
+
                 // Move to select button
-                yield moveCursorTo(selectFolderBtn, 0, 0);
-                yield clickCursor();
+                await moveCursorTo(selectFolderBtn, 0, 0);
+                await clickCursor();
                 selectFolderBtn.style.transform = 'scale(0.95)';
                 setTimeout(() => { selectFolderBtn.style.transform = 'scale(1)'; }, 150);
-                yield new Promise(r => setTimeout(r, 400));
+                
+                await new Promise(r => setTimeout(r, 400));
+                
                 // Close dialog
                 folderDialog.classList.remove('active');
-                yield new Promise(r => setTimeout(r, 600));
+                
+                await new Promise(r => setTimeout(r, 600));
             }
+            
             // 5. Show the extension card appearing
             eictoExtCard.classList.add('visible');
+
             // Hide and repeat
-            yield new Promise(r => setTimeout(r, 5000));
+            await new Promise(r => setTimeout(r, 5000));
             cursor.classList.remove('visible');
+            
             // Reset position offscreen
             setTimeout(() => {
                 cursor.style.left = '50vw';
                 cursor.style.top = '100vh';
                 setTimeout(runAnimationSequence, 1000);
             }, 1000);
-        });
+        };
+
         // Initialize position
         cursor.style.left = '50vw';
         cursor.style.top = '100vh';
+        
         // Start sequence
         setTimeout(runAnimationSequence, 1500);
     }
