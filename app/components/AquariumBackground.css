@@ -5,7 +5,7 @@
     width: 100vw;
     height: 100vh;
     pointer-events: none; /* Crucial: lets clicks pass through */
-    z-index: 0; /* Keep it behind everything */
+    z-index: 10; /* Increase z-index so it shows over the blobs but behind the header */
     overflow: hidden;
 }
 
