@@ -25,6 +25,8 @@ export default function IssuesPage() {
     const [issues, setIssues] = useState<Issue[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 5; // Show 5 issues per page
     
     // Form state
     const [showForm, setShowForm] = useState(false);
@@ -155,6 +157,17 @@ export default function IssuesPage() {
         issue.description.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    // Reset to page 1 when search query changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery]);
+
+    const totalPages = Math.ceil(filteredIssues.length / ITEMS_PER_PAGE);
+    const paginatedIssues = filteredIssues.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+    );
+
     return (
         <main className="issues-page">
             <div className="container issues-container">
@@ -234,76 +247,109 @@ export default function IssuesPage() {
                             {searchQuery ? "No issues found matching your search." : "No issues posted yet. Be the first to suggest a feature!"}
                         </div>
                     ) : (
-                        filteredIssues.map(issue => (
-                            <div key={issue._id} className="issue-card fade-in-up visible">
-                                <div className="vote-column">
-                                    <button className="vote-btn" onClick={() => handleUpvote(issue._id)}>
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                                    </button>
-                                    <span className="vote-count">{issue.votes}</span>
-                                </div>
-                                
-                                <div className="issue-content">
-                                    <div className="issue-title-row">
-                                        <h3 className="issue-title">{issue.title}</h3>
-                                        <span className={`status-badge ${issue.status.toLowerCase().replace(' ', '-')}`}>{issue.status}</span>
-                                    </div>
-                                    <p className="issue-desc">{issue.description}</p>
-                                    
-                                    <div className="issue-meta">
-                                        <span>Posted by <span className="author">{issue.author}</span></span>
-                                        <span>•</span>
-                                        <span>{new Date(issue.createdAt).toLocaleDateString()}</span>
-                                        
-                                        <button className="comment-toggle" onClick={() => toggleComments(issue._id)}>
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                                            {issue.comments.length} Comments
+                        <>
+                            {paginatedIssues.map(issue => (
+                                <div key={issue._id} className="issue-card fade-in-up visible">
+                                    <div className="vote-column">
+                                        <button className="vote-btn" onClick={() => handleUpvote(issue._id)}>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
                                         </button>
+                                        <span className="vote-count">{issue.votes}</span>
                                     </div>
                                     
-                                    {expandedIssue === issue._id && (
-                                        <div className="comments-section">
-                                            {issue.comments.length > 0 ? (
-                                                <div className="comments-list">
-                                                    {issue.comments.map(comment => (
-                                                        <div key={comment._id} className="comment">
-                                                            <div className="comment-author">
-                                                                {comment.author} 
-                                                                <span className="comment-date">{new Date(comment.createdAt).toLocaleDateString()}</span>
-                                                            </div>
-                                                            <p className="comment-text">{comment.text}</p>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <div className="no-comments">No comments yet. Start the conversation!</div>
-                                            )}
+                                    <div className="issue-content">
+                                        <div className="issue-title-row">
+                                            <h3 className="issue-title">{issue.title}</h3>
+                                            <span className={`status-badge ${issue.status.toLowerCase().replace(' ', '-')}`}>{issue.status}</span>
+                                        </div>
+                                        <p className="issue-desc">{issue.description}</p>
+                                        
+                                        <div className="issue-meta">
+                                            <span>Posted by <span className="author">{issue.author}</span></span>
+                                            <span>•</span>
+                                            <span>{new Date(issue.createdAt).toLocaleDateString()}</span>
                                             
-                                            <form className="comment-form" onSubmit={(e) => handleAddComment(e, issue._id)}>
-                                                <input 
-                                                    type="text" 
-                                                    placeholder="Your Name (Optional)" 
-                                                    className="input-field small"
-                                                    value={commentAuthor}
-                                                    onChange={(e) => setCommentAuthor(e.target.value)}
-                                                />
-                                                <div className="comment-input-row">
+                                            <button className="comment-toggle" onClick={() => toggleComments(issue._id)}>
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                                {issue.comments.length} Comments
+                                            </button>
+                                        </div>
+                                        
+                                        {expandedIssue === issue._id && (
+                                            <div className="comments-section">
+                                                {issue.comments.length > 0 ? (
+                                                    <div className="comments-list">
+                                                        {issue.comments.map(comment => (
+                                                            <div key={comment._id} className="comment">
+                                                                <div className="comment-author">
+                                                                    {comment.author} 
+                                                                    <span className="comment-date">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                                                                </div>
+                                                                <p className="comment-text">{comment.text}</p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <div className="no-comments">No comments yet. Start the conversation!</div>
+                                                )}
+                                                
+                                                <form className="comment-form" onSubmit={(e) => handleAddComment(e, issue._id)}>
                                                     <input 
                                                         type="text" 
-                                                        placeholder="Write a comment..." 
-                                                        required 
-                                                        className="input-field"
-                                                        value={commentText}
-                                                        onChange={(e) => setCommentText(e.target.value)}
+                                                        placeholder="Your Name (Optional)" 
+                                                        className="input-field small"
+                                                        value={commentAuthor}
+                                                        onChange={(e) => setCommentAuthor(e.target.value)}
                                                     />
-                                                    <button type="submit" className="btn btn-primary" style={{padding: '12px 24px', fontSize: '1rem'}} disabled={isCommenting}>Post</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    )}
+                                                    <div className="comment-input-row">
+                                                        <input 
+                                                            type="text" 
+                                                            placeholder="Write a comment..." 
+                                                            required 
+                                                            className="input-field"
+                                                            value={commentText}
+                                                            onChange={(e) => setCommentText(e.target.value)}
+                                                        />
+                                                        <button type="submit" className="btn btn-primary" style={{padding: '12px 24px', fontSize: '1rem'}} disabled={isCommenting}>Post</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        ))
+                            ))}
+                            
+                            {/* Pagination Controls */}
+                            {totalPages > 1 && (
+                                <div className="pagination">
+                                    <button 
+                                        className="page-btn page-nav-btn" 
+                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                        disabled={currentPage === 1}
+                                    >
+                                        Previous
+                                    </button>
+                                    
+                                    {Array.from({ length: totalPages }).map((_, idx) => (
+                                        <button 
+                                            key={idx} 
+                                            className={`page-btn ${currentPage === idx + 1 ? 'active' : ''}`}
+                                            onClick={() => setCurrentPage(idx + 1)}
+                                        >
+                                            {idx + 1}
+                                        </button>
+                                    ))}
+                                    
+                                    <button 
+                                        className="page-btn page-nav-btn" 
+                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                        disabled={currentPage === totalPages}
+                                    >
+                                        Next
+                                    </button>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </div>
