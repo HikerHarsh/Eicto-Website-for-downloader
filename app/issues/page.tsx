@@ -168,7 +168,7 @@ export default function IssuesPage() {
                 </div>
 
                 {showForm && (
-                    <div className="issue-form-container fade-in-up">
+                    <div className="issue-form-container">
                         <h3>Create New Issue</h3>
                         <form className="issue-form" onSubmit={handleCreateIssue}>
                             <input 
@@ -205,7 +205,7 @@ export default function IssuesPage() {
                     </div>
                 )}
 
-                <div className="issues-list fade-in-up">
+                <div className="issues-list">
                     {loading ? (
                         <div className="loading">Loading issues...</div>
                     ) : issues.length === 0 ? (
@@ -216,7 +216,7 @@ export default function IssuesPage() {
                         </div>
                     ) : (
                         issues.map(issue => (
-                            <div key={issue._id} className="issue-card">
+                            <div key={issue._id} className="issue-card fade-in-up visible">
                                 <div className="vote-column">
                                     <button className="vote-btn" onClick={() => handleUpvote(issue._id)}>
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
@@ -243,7 +243,7 @@ export default function IssuesPage() {
                                     </div>
                                     
                                     {expandedIssue === issue._id && (
-                                        <div className="comments-section fade-in-up visible">
+                                        <div className="comments-section">
                                             {issue.comments.length > 0 ? (
                                                 <div className="comments-list">
                                                     {issue.comments.map(comment => (
