@@ -127,7 +127,8 @@ export default function HeroAnimation() {
                     <div 
                         className={`virtual-cursor-hero ${cursorActive ? 'active' : ''}`}
                         style={{
-                            transform: `translate(${cursorPos.x}, ${cursorPos.y})`,
+                            left: cursorPos.x,
+                            top: cursorPos.y,
                         }}
                     >
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

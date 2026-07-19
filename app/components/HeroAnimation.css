@@ -171,7 +171,7 @@
     left: 0;
     z-index: 100;
     pointer-events: none;
-    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: left 0.8s cubic-bezier(0.25, 1, 0.5, 1), top 0.8s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .virtual-cursor-hero svg {
