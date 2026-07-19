@@ -1,24 +1,22 @@
 .live-download-counter {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    margin-top: 24px;
-    padding: 10px 24px;
-    background: rgba(255, 255, 255, 0.12);
+    gap: 8px;
+    margin-top: 5px;
+    padding: 6px 16px;
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: none;
     border-radius: 40px;
     font-family: 'Inter', sans-serif;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    box-shadow: none;
 }
 
 .live-download-counter.pulse-anim {
-    transform: scale(1.08);
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .live-dot {
@@ -31,7 +29,7 @@
 }
 
 .counter-number {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     font-weight: 800;
     color: #ffffff;
     font-variant-numeric: tabular-nums;
@@ -40,8 +38,8 @@
 }
 
 .counter-text {
-    font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -53,9 +51,9 @@
 }
 
 .live-counter-skeleton {
-    margin-top: 24px;
-    width: 250px;
-    height: 44px;
+    margin-top: 5px;
+    width: 200px;
+    height: 32px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 30px;
     position: relative;
